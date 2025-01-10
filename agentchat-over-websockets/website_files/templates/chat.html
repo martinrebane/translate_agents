@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AG2 websocket</title>
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+        <style>
+            body {
+                font-family: 'JetBrains Mono', monospace;
+                max-width: 800px;
+                margin: 20px auto;
+                padding: 20px;
+            }
+            h1 {
+                text-align: center;
+            }
+            form {
+                margin: 20px 0;
+                text-align: center;
+            }
+            input {
+                width: 80%;
+                padding: 8px;
+                margin-right: 10px;
+                font-family: inherit;
+            }
+            button {
+                padding: 8px 20px;
+                background: #4285f4;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-family: inherit;
+            }
+            #messages {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            #messages li {
+                padding: 8px;
+                margin: 4px 0;
+                background: #f1f3f4;
+                border-radius: 4px;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                font-family: monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>AG2 Structured Messages w/ websockets</h1>
+        <form action="" onsubmit="sendMessage(event)">
+            <input type="text" id="messageText" autocomplete="off"/>
+            <button>Send</button>
+        </form>
+        <ul id='messages'>
+        </ul>
+        <script>
+            function formatMessageContent(content) {
+                if (content && typeof content === 'object') {
+                    // Create a copy without uuid
+                    const formatted = {};
+                    for (const [key, value] of Object.entries(content)) {
+                        if (key !== 'uuid') {
+                            formatted[key] = value;
+                        }
+                    }
+                    return JSON.stringify(formatted, null, 2);
+                }
+                return String(content);
+            }
+
+            function format_message(data) {
+                try {
+                    let msg = typeof data === 'string' ? JSON.parse(data) : data;
+                    let formatted = {
+                        type: msg.type || '',
+                        content: formatMessageContent(msg.content)
+                    };
+                    
+                    // Add any additional fields
+                    for (const [key, value] of Object.entries(msg)) {
+                        if (key !== 'type' && key !== 'content') {
+                            formatted[key] = value;
+                        }
+                    }
+                    
+                    return JSON.stringify(formatted, null, 2);
+                } catch (e) {
+                    return String(data);
+                }
+            }
+            
+            var ws = new WebSocket("ws://localhost:8080");
+            ws.onmessage = function(event) {{
+                var messages = document.getElementById('messages')
+                var message = document.createElement('li')
+                var formattedContent = format_message(event.data)
+                var content = document.createTextNode(formattedContent)
+                message.appendChild(content)
+                messages.appendChild(message)
+            }};
+            
+            function sendMessage(event) {{
+                var input = document.getElementById("messageText")
+                ws.send(input.value)
+                input.value = ''
+                event.preventDefault()
+            }}
+        </script>
+    </body>
+</html>
