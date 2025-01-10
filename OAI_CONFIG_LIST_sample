@@ -1,7 +1,7 @@
 [
     {
-        "model": "gpt-4o-mini-realtime-preview",
+        "model": "gpt-4o-mini",
         "api_key": "<your OpenAI API key here>",
-        "tags": ["gpt-4o-mini-realtime", "realtime"]
+        "tags": ["gpt-4o-mini"]
     }
 ]
