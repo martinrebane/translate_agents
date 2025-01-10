@@ -1,6 +1,8 @@
 
 # Agentchat over websockets
 
+This project demonstrates how to use the [`IOStream`](https://docs.ag2.ai/docs/reference/io/websockets) class for real-time input and output streaming with [WebSockets](https://websockets.readthedocs.io/en/stable/), enabling responsive and efficient web clients by eliminating the need for server polling.
+
 ## **Prerequisites**
 
 Before you begin, ensure you have the following:
