@@ -52,4 +52,4 @@ python agentchat-over-websockets/main.py
 With the server running, open the client application in your browser by navigating to [http://localhost:8001/](http://localhost:8001/). And send a message to the chat and watch the conversation between agents roll out in your browser.
 
 ## **License**
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [Apache 2.0 license](LICENSE).
