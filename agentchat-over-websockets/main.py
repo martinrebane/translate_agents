@@ -15,8 +15,12 @@ config_list = autogen.config_list_from_json(
 
 PORT = 8001
 
+
 def on_connect(iostream: IOWebsockets) -> None:
-    print(f" - on_connect(): Connected to client using IOWebsockets {iostream}", flush=True)
+    print(
+        f" - on_connect(): Connected to client using IOWebsockets {iostream}",
+        flush=True,
+    )
 
     print(" - on_connect(): Receiving message from client.", flush=True)
 
@@ -39,7 +43,8 @@ def on_connect(iostream: IOWebsockets) -> None:
         user_proxy = autogen.UserProxyAgent(
             name="user_proxy",
             system_message="A proxy for the user.",
-            is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().endswith("TERMINATE"),
+            is_termination_msg=lambda x: x.get("content", "")
+            and x.get("content", "").rstrip().endswith("TERMINATE"),
             human_input_mode="NEVER",
             max_consecutive_auto_reply=10,
             code_execution_config=False,
@@ -50,7 +55,10 @@ def on_connect(iostream: IOWebsockets) -> None:
             return f"The weather forecast for {city} at {datetime.now()} is sunny."
 
         autogen.register_function(
-            weather_forecast, caller=agent, executor=user_proxy, description="Weather forecast for a city"
+            weather_forecast,
+            caller=agent,
+            executor=user_proxy,
+            description="Weather forecast for a city",
         )
 
         # 5. Initiate conversation
@@ -65,16 +73,21 @@ def on_connect(iostream: IOWebsockets) -> None:
     except Exception as e:
         print(f" - on_connect(): Exception: {e}", flush=True)
         raise e
-    
+
 
 class MyRequestHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=Path(__file__).parent / "website_files" / "templates", **kwargs)
+        super().__init__(
+            *args,
+            directory=Path(__file__).parent / "website_files" / "templates",
+            **kwargs,
+        )
 
     def do_GET(self):
         if self.path == "/":
             self.path = "/chat.html"
         return SimpleHTTPRequestHandler.do_GET(self)
+
 
 handler = MyRequestHandler
 
