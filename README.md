@@ -1,3 +1,13 @@
+# Tartu Science Park port of agentchat UI for translate agents
+
+* you do not need to configure your models in OAI_CONFIG_LIST, use .env file instead
+* copy .env_sample to .env and add your AI model keys
+ * in case you do not have access to several different AI models, use just one
+ * the model for each agent is selected by `llm_config={"config_list": cl}` in main.py - update `cl`, `cl_full` and `cl_claude` according to your needs per each agent
+* install `pip install python-dotenv`
+* agent code is in agentchat-over-websockets/main.py
+* user interface template is in agentchat-over-websockets/website_files/templates/chat.html
+* otherwise follow the instructions below
 
 # Agentchat over websockets
 
