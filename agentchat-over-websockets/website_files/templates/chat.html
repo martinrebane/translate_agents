@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>AG2 websocket</title>
+        <title>AG2 localization demo</title>
         <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
         <style>
             body {
@@ -36,6 +36,8 @@
                 list-style: none;
                 padding: 0;
                 margin: 0;
+                display: flex;
+                flex-direction: column;
             }
             #messages li {
                 padding: 8px;
@@ -49,7 +51,7 @@
         </style>
     </head>
     <body>
-        <h1>AG2 Structured Messages w/ websockets</h1>
+        <h1>Demo by Sparkup Tartu Science Park</h1>
         <form action="" onsubmit="sendMessage(event)">
             <input type="text" id="messageText" autocomplete="off"/>
             <button>Send</button>
@@ -66,7 +68,9 @@
                             formatted[key] = value;
                         }
                     }
-                    return JSON.stringify(formatted, null, 2);
+                    //return JSON.stringify(formatted, null, 2);
+                    return "<b>" + formatted["sender_name"] + "</b>:<br /> " + formatted["content"];
+                    
                 }
                 return String(content);
             }
@@ -74,6 +78,9 @@
             function format_message(data) {
                 try {
                     let msg = typeof data === 'string' ? JSON.parse(data) : data;
+                    if (msg.content["content"] === undefined || msg.content["content"] === "") {
+                        return "";
+                    }
                     let formatted = {
                         type: msg.type || '',
                         content: formatMessageContent(msg.content)
@@ -86,21 +93,44 @@
                         }
                     }
                     
-                    return JSON.stringify(formatted, null, 2);
+                    //return JSON.stringify(formatted, null, 2);
+                    return formatted["content"];
                 } catch (e) {
                     return String(data);
                 }
             }
             
             var ws = new WebSocket("ws://localhost:8080");
-            ws.onmessage = function(event) {{
-                var messages = document.getElementById('messages')
-                var message = document.createElement('li')
-                var formattedContent = format_message(event.data)
-                var content = document.createTextNode(formattedContent)
-                message.appendChild(content)
-                messages.appendChild(message)
-            }};
+            ws.onmessage = function(event) {
+                var messages = document.getElementById('messages');
+                var message = document.createElement('div');
+                var formattedContent = format_message(event.data);
+                if (formattedContent === "") {
+                    return;
+                }
+                
+                message.style.maxWidth = '70%';
+                message.style.margin = '10px';
+                message.style.padding = '10px';
+                message.style.borderRadius = '10px';
+                message.style.backgroundColor = '#DCF8C6';
+                message.style.boxShadow = '0 1px 1px rgba(0,0,0,0.1)';
+                message.style.wordWrap = 'break-word';
+
+                var content = document.createElement('div');
+                content.innerHTML = formattedContent;
+                message.appendChild(content);
+
+                // Align messages in WhatsApp style
+                var messageCount = messages.children.length;
+                if (messageCount % 2 === 0) {
+                    message.style.alignSelf = 'flex-start';
+                } else {
+                    message.style.alignSelf = 'flex-end';
+                }
+
+                messages.appendChild(message);
+            };
             
             function sendMessage(event) {{
                 var input = document.getElementById("messageText")
