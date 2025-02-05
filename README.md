@@ -1,4 +1,4 @@
-# Tartu Science Park port of agentchat UI for translate agents
+# Tartu Science Park port of agentchat UI for localisation agents
 
 * you do not need to configure your models in OAI_CONFIG_LIST, use .env file instead
 * copy .env_sample to .env and add your AI model keys
